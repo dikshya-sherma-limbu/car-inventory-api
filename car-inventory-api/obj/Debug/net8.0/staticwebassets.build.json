@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "eghSTRlRgW4iex9mN3eR1H+NfLOeNi8HwHYEgl3I4Wk=",
+  "Source": "car-inventory-api",
+  "BasePath": "_content/car-inventory-api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

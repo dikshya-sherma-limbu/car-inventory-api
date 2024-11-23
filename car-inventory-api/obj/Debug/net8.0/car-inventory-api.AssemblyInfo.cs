@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("car-inventory-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e36656c83c240eb2dbdfeb961e8ca262aeec1fe2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d49113400a64c11419459bbc2494ec1f959f9f69")]
 [assembly: System.Reflection.AssemblyProductAttribute("car-inventory-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("car-inventory-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
