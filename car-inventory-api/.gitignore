@@ -1,0 +1,2 @@
+﻿# Ignore appsettings.json to protect secrets
+appsettings.json
