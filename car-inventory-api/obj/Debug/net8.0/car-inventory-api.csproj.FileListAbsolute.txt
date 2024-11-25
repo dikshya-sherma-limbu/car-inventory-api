@@ -33,3 +33,4 @@ C:\Users\diksh\Desktop\Semester_05\API\car-inventory-api\car-inventory-api\car-i
 C:\Users\diksh\Desktop\Semester_05\API\car-inventory-api\car-inventory-api\car-inventory-api\obj\Debug\net8.0\car-inventory-api.pdb
 C:\Users\diksh\Desktop\Semester_05\API\car-inventory-api\car-inventory-api\car-inventory-api\obj\Debug\net8.0\car-inventory-api.genruntimeconfig.cache
 C:\Users\diksh\Desktop\Semester_05\API\car-inventory-api\car-inventory-api\car-inventory-api\obj\Debug\net8.0\ref\car-inventory-api.dll
+C:\Users\diksh\Desktop\Semester_05\API\car-inventory-api\car-inventory-api\car-inventory-api\bin\Debug\net8.0\AutoMapper.dll

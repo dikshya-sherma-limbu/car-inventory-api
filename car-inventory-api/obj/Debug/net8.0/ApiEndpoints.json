@@ -8,8 +8,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "newCar",
-        "Type": "car_inventory_api.Models.Cars",
+        "Name": "createCarDTO",
+        "Type": "car_inventory_api.DTOs.CreateCarDTO",
         "IsRequired": true
       }
     ],
@@ -24,13 +24,18 @@
     "Order": 0,
     "Parameters": [
       {
+        "Name": "deleteCarDTO",
+        "Type": "car_inventory_api.DTOs.DeleteCarDTO",
+        "IsRequired": true
+      },
+      {
         "Name": "CarID",
-        "Type": "System.String",
+        "Type": "",
         "IsRequired": true
       },
       {
         "Name": "Make",
-        "Type": "System.String",
+        "Type": "",
         "IsRequired": true
       }
     ],

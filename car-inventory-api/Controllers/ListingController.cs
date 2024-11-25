@@ -1,9 +1,11 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2;
-using Amazon.Runtime;
+using AutoMapper;
+using car_inventory_api.AWSConfiguration;
+using car_inventory_api.DTOs;
 using car_inventory_api.Models;
-using Microsoft.AspNetCore.Http;
+using car_inventory_api.Repositories;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace car_inventory_api.Controllers
 {
@@ -11,59 +13,52 @@ namespace car_inventory_api.Controllers
     [ApiController]
     public class ListingController : ControllerBase
     {
-        private readonly DynamoDBContext _dbContext;
+        //private readonly DynamoDBContext _dbContext;
 
-        public ListingController(IConfiguration configuration)
+        private readonly ICarRepository _carRepository;
+        private readonly IMapper _mapper;
+
+
+        public ListingController( ICarRepository carRepository,IMapper mapper)
         {
-            var accessKey = configuration["AWSCredentials:AccessKey"];
-            var secretKey = configuration["AWSCredentials:SecretKey"];
-            var region = configuration["AWSCredentials:Region"];
-
-            // Creating BasicAWSCredentials using accessKey and secretKey
-            var credentials = new BasicAWSCredentials(accessKey, secretKey);
-
-            // Creating the DynamoDB client with the credentials and region
-            var dynamoDbClient = new AmazonDynamoDBClient(credentials, Amazon.RegionEndpoint.GetBySystemName(region));
-
-            // Initializing DynamoDBContext
-            _dbContext = new DynamoDBContext(dynamoDbClient);
+            
+            // Injecting the CarRepository
+            _carRepository = carRepository;
+            // Injecting the IMapper to map DTOs to Models and vice versa
+            _mapper = mapper;
         }
+
         //// GET: /api/listing/Cars
         [HttpGet("GetCars")]  // This defines the GET route for /Cars
-        public async Task<IActionResult> GetCars([FromQuery] string? makeFilter, [FromQuery] string? yearFilter)
+        public async Task<IActionResult> GetCars(string? makeFilter, string? yearFilter)
         {
-            var conditions = new List<ScanCondition>();
+            // Call the repository to get the list of cars based on filters
+            //listCarDTO.Make, listCarDTO.Year
+            var cars = await _carRepository.GetCarsAsync(makeFilter,yearFilter);
 
-            if (!string.IsNullOrEmpty(makeFilter))
-            {
-                conditions.Add(new ScanCondition("Make", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, makeFilter));
-            }
-
-            if (yearFilter != null)
-            {
-                conditions.Add(new ScanCondition("Year", Amazon.DynamoDBv2.DocumentModel.ScanOperator.GreaterThanOrEqual, yearFilter));
-            }
-            var cars = await _dbContext.ScanAsync<Cars>(conditions).GetRemainingAsync();
-
+            // Return the result
             return Ok(cars);
         }
 
         // POST: ListingController/Create
         [HttpPost("AddCar")]
-        public async Task<IActionResult> Create([FromBody] Cars newCar)
+        public async Task<IActionResult> Create([FromBody] CreateCarDTO createCarDTO)
         {
             try
             {
                 // Validate the incoming car object
-                if (newCar == null || string.IsNullOrEmpty(newCar.CarID))
+                if (createCarDTO == null || string.IsNullOrEmpty(createCarDTO.CarID))
                 {
                     return BadRequest("Invalid car data. 'CarID' is required.");
                 }
 
-                // Save the car object to DynamoDB
-                await _dbContext.SaveAsync(newCar);
+                // Map CreateCarDTO to Cars model
+                var newCar = _mapper.Map<Cars>(createCarDTO);
 
-                return Ok($"Car with ID '{newCar.CarID}' created successfully.");
+                // Call the repository to add the new car to DynamoDB
+                await _carRepository.AddCarAsync(newCar);
+
+                return Ok($"Car with ID '{createCarDTO}' created successfully.");
             }
             catch (Exception ex)
             {
@@ -76,16 +71,14 @@ namespace car_inventory_api.Controllers
         [HttpGet("Details/{CarID}/{Make}")]  // Define the specific route for this action
         public async Task<IActionResult> Details(String CarID, string Make)
         {
-            // Fetch the item from the database by ID
-            var car = await _dbContext.LoadAsync<Cars>(CarID,Make);
+            // Call the repository to get car details
+            var car = await _carRepository.GetCarDetailsAsync(CarID, Make);
 
-            // Check if the item exists
             if (car == null)
             {
-                return NotFound($"Car with ID {CarID} not found.");
+                return NotFound($"Car with ID {CarID} and Make '{Make}' not found.");
             }
 
-            // Return the car details as an HTTP 200 response
             return Ok(car);
         }
 
@@ -96,8 +89,8 @@ namespace car_inventory_api.Controllers
         {
             try
             {
-                // Load the existing car entry based on CarID and Make (partition and sort keys)
-                var existingCar = await _dbContext.LoadAsync<Cars>(CarID, updatedCar.Make);
+                // Call the repository to update car details
+                var existingCar = await _carRepository.GetCarDetailsAsync(CarID, updatedCar.Make);
 
                 if (existingCar == null)
                 {
@@ -115,8 +108,8 @@ namespace car_inventory_api.Controllers
                 existingCar.Status = updatedCar.Status;
                 existingCar.Year = updatedCar.Year;
 
-                // Save the updated car entry back to the DynamoDB table
-                await _dbContext.SaveAsync(existingCar);
+                // Call the repository to save the updated car
+                await _carRepository.UpdateCarAsync(existingCar);
 
                 return Ok("Car updated successfully.");
             }
@@ -129,20 +122,12 @@ namespace car_inventory_api.Controllers
 
         // DELETE: ListingController/Delete/5
         [HttpDelete("Delete/{CarID}/{Make}")]  // Define the specific route for this action
-        public async Task<IActionResult> Delete(String CarID,String Make)
+        public async Task<IActionResult> Delete([FromBody] DeleteCarDTO deleteCarDTO)
         {
             try
-            {
-                // Load the existing car entry based on CarID and Make (partition and sort keys)
-                var existingCar = await  _dbContext.LoadAsync<Cars>(CarID, Make);
-                if (existingCar == null)
-                {
-                    return NotFound($"Car with ID {CarID} and Make '{Make}' not found.");
-
-                }
-
+            { 
                 // Delete the existing car entry from the DynamoDB table
-                await _dbContext.DeleteAsync(existingCar);
+                await _carRepository.DeleteCarAsync(deleteCarDTO.CarID, deleteCarDTO.Make);
                 return Ok($"Car deleted successfully ");
             } catch (Exception ex) {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
