@@ -29,7 +29,7 @@ namespace car_inventory_api.Controllers
             _dbContext = new DynamoDBContext(dynamoDbClient);
         }
         //// GET: /api/listing/Cars
-        [HttpGet("Cars")]  // This defines the GET route for /Cars
+        [HttpGet("GetCars")]  // This defines the GET route for /Cars
         public async Task<IActionResult> GetCars([FromQuery] string? makeFilter, [FromQuery] string? yearFilter)
         {
             var conditions = new List<ScanCondition>();
@@ -48,77 +48,107 @@ namespace car_inventory_api.Controllers
             return Ok(cars);
         }
 
-        // GET: ListingController/Details/5
-        [HttpGet("Details/{id}")]  // Define the specific route for this action
-        public ActionResult Details(int id)
-        {
-            return Ok();
-        }
-
-        // GET: ListingController/Create
-        [HttpGet("Create")]  // Define the specific route for this action
-        public ActionResult Create()
-        {
-            return Ok();
-        }
-
         // POST: ListingController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return Ok();
-        //    }
-        //}
-
-        // GET: ListingController/Edit/5
-        [HttpGet("Edit/{id}")]  // Define the specific route for this action
-        public ActionResult Edit(int id)
-        {
-            return Ok();
-        }
-
-        //// POST: ListingController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return Ok();
-        //    }
-        //}
-
-        // GET: ListingController/Delete/5
-        [HttpGet("Delete/{id}")]  // Define the specific route for this action
-        public ActionResult Delete(int id)
-        {
-            return Ok();
-        }
-
-        // POST: ListingController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpPost("AddCar")]
+        public async Task<IActionResult> Create([FromBody] Cars newCar)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                // Validate the incoming car object
+                if (newCar == null || string.IsNullOrEmpty(newCar.CarID))
+                {
+                    return BadRequest("Invalid car data. 'CarID' is required.");
+                }
+
+                // Save the car object to DynamoDB
+                await _dbContext.SaveAsync(newCar);
+
+                return Ok($"Car with ID '{newCar.CarID}' created successfully.");
             }
-            catch
+            catch (Exception ex)
             {
-                return Ok();
+                // Handle unexpected errors
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        // GET: ListingController/Details/5
+        [HttpGet("Details/{CarID}/{Make}")]  // Define the specific route for this action
+        public async Task<IActionResult> Details(String CarID, string Make)
+        {
+            // Fetch the item from the database by ID
+            var car = await _dbContext.LoadAsync<Cars>(CarID,Make);
+
+            // Check if the item exists
+            if (car == null)
+            {
+                return NotFound($"Car with ID {CarID} not found.");
+            }
+
+            // Return the car details as an HTTP 200 response
+            return Ok(car);
+        }
+
+
+        //// PATCH: ListingController/Update/234dsfh42/Audi
+        [HttpPatch("Update/{CarID}/{Make}")]
+        public async Task<IActionResult> Update(String CarID, [FromBody] Cars updatedCar)
+        {
+            try
+            {
+                // Load the existing car entry based on CarID and Make (partition and sort keys)
+                var existingCar = await _dbContext.LoadAsync<Cars>(CarID, updatedCar.Make);
+
+                if (existingCar == null)
+                {
+                    return NotFound($"Car with ID {CarID} and Make '{updatedCar.Make}' not found.");
+                }
+
+                // Update the properties of the existing car entry
+                existingCar.Color = updatedCar.Color;
+                existingCar.DateAdded = updatedCar.DateAdded;
+                existingCar.Description = updatedCar.Description;
+                existingCar.Mileage = updatedCar.Mileage;
+                existingCar.Model = updatedCar.Model;
+                existingCar.PhotoURL = updatedCar.PhotoURL;
+                existingCar.Price = updatedCar.Price;
+                existingCar.Status = updatedCar.Status;
+                existingCar.Year = updatedCar.Year;
+
+                // Save the updated car entry back to the DynamoDB table
+                await _dbContext.SaveAsync(existingCar);
+
+                return Ok("Car updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and return an error response
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // DELETE: ListingController/Delete/5
+        [HttpDelete("Delete/{CarID}/{Make}")]  // Define the specific route for this action
+        public async Task<IActionResult> Delete(String CarID,String Make)
+        {
+            try
+            {
+                // Load the existing car entry based on CarID and Make (partition and sort keys)
+                var existingCar = await  _dbContext.LoadAsync<Cars>(CarID, Make);
+                if (existingCar == null)
+                {
+                    return NotFound($"Car with ID {CarID} and Make '{Make}' not found.");
+
+                }
+
+                // Delete the existing car entry from the DynamoDB table
+                await _dbContext.DeleteAsync(existingCar);
+                return Ok($"Car deleted successfully ");
+            } catch (Exception ex) {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        
     }
 }

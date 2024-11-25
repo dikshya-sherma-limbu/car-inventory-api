@@ -5,9 +5,10 @@ namespace car_inventory_api.Models
     [DynamoDBTable("Cars")]
     public class Cars
     {
-        [DynamoDBProperty("CarID")]
+        [DynamoDBHashKey("CarID")]
         public string CarID { get; set; }
-        [DynamoDBProperty("Make")]
+
+        [DynamoDBRangeKey("Make")]
         public string Make { get; set; }
         [DynamoDBProperty("Color")]
         public string Color { get; set; }

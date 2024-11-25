@@ -1,21 +1,58 @@
 [
   {
     "ContainingType": "car_inventory_api.Controllers.ListingController",
-    "Method": "Delete",
-    "RelativePath": "api/Listing",
+    "Method": "Create",
+    "RelativePath": "api/Listing/AddCar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": false
+        "Name": "newCar",
+        "Type": "car_inventory_api.Models.Cars",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "car_inventory_api.Controllers.ListingController",
+    "Method": "Delete",
+    "RelativePath": "api/Listing/Delete/{CarID}/{Make}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CarID",
+        "Type": "System.String",
+        "IsRequired": true
       },
       {
-        "Name": "collection",
-        "Type": "Microsoft.AspNetCore.Http.IFormCollection",
-        "IsRequired": false
+        "Name": "Make",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "car_inventory_api.Controllers.ListingController",
+    "Method": "Details",
+    "RelativePath": "api/Listing/Details/{CarID}/{Make}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CarID",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Make",
+        "Type": "System.String",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -23,7 +60,7 @@
   {
     "ContainingType": "car_inventory_api.Controllers.ListingController",
     "Method": "GetCars",
-    "RelativePath": "api/Listing/Cars",
+    "RelativePath": "api/Listing/GetCars",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -43,57 +80,25 @@
   },
   {
     "ContainingType": "car_inventory_api.Controllers.ListingController",
-    "Method": "Create",
-    "RelativePath": "api/Listing/Create",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "car_inventory_api.Controllers.ListingController",
-    "Method": "Delete",
-    "RelativePath": "api/Listing/Delete/{id}",
-    "HttpMethod": "GET",
+    "Method": "Update",
+    "RelativePath": "api/Listing/Update/{CarID}/{Make}",
+    "HttpMethod": "PATCH",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "CarID",
+        "Type": "System.String",
         "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "car_inventory_api.Controllers.ListingController",
-    "Method": "Details",
-    "RelativePath": "api/Listing/Details/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
+      },
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "updatedCar",
+        "Type": "car_inventory_api.Models.Cars",
         "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "car_inventory_api.Controllers.ListingController",
-    "Method": "Edit",
-    "RelativePath": "api/Listing/Edit/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
+      },
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "Make",
+        "Type": "",
         "IsRequired": true
       }
     ],
