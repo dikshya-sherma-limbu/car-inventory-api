@@ -24,6 +24,8 @@ builder.Services.AddScoped<DynamoDBContext>(sp =>
 // Register the ICarRepository interface and CarRepository class as Scoped
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 
+builder.Services.AddScoped<ISalesRepository, SalesRepository>();
+
 // Configure AutoMapper for DTOs and Models
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

@@ -110,24 +110,82 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "car_inventory_api.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "api/WeatherForecast",
+    "ContainingType": "car_inventory_api.Controllers.SalesController",
+    "Method": "CreateSale",
+    "RelativePath": "api/Sales/Create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createSaleDTO",
+        "Type": "car_inventory_api.DTOs.CreateSaleDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "car_inventory_api.Controllers.SalesController",
+    "Method": "DeleteSale",
+    "RelativePath": "api/Sales/Delete/{SaleID}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "saleID",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "car_inventory_api.Controllers.SalesController",
+    "Method": "GetSaleDetails",
+    "RelativePath": "api/Sales/Details/{SaleID}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "saleID",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "car_inventory_api.Controllers.SalesController",
+    "Method": "GetAllSales",
+    "RelativePath": "api/Sales/GetAllSales",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "car_inventory_api.Controllers.SalesController",
+    "Method": "UpdateSale",
+    "RelativePath": "api/Sales/Update/{SaleID}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[car_inventory_api.WeatherForecast, car-inventory-api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
+        "Name": "saleID",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateSaleDTO",
+        "Type": "car_inventory_api.DTOs.UpdateSaleDTO",
+        "IsRequired": true
       }
     ],
-    "EndpointName": "GetWeatherForecast"
+    "ReturnTypes": []
   }
 ]

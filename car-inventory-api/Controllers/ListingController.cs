@@ -125,15 +125,15 @@ namespace car_inventory_api.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteCarDTO deleteCarDTO)
         {
             try
-            { 
+            {
                 // Delete the existing car entry from the DynamoDB table
                 await _carRepository.DeleteCarAsync(deleteCarDTO.CarID, deleteCarDTO.Make);
                 return Ok($"Car deleted successfully ");
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        
     }
 }

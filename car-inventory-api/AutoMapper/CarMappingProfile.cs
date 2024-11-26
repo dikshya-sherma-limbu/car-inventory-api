@@ -17,6 +17,15 @@ namespace car_inventory_api.AutoMapper
 
             // Mapping from DeleteCarDTO to Cars for delete operation (input)
             CreateMap<DeleteCarDTO, Cars>();  // This is where you map user input (DTO) to model
+            
+
+            CreateMap<Sales, SaleDTO>();
+
+            // CreateSaleDTO -> Sales
+            CreateMap<CreateSaleDTO, Sales>();
+
+            // UpdateSaleDTO -> Sales (for updating sale properties)
+            CreateMap<UpdateSaleDTO, Sales>();
 
         }
 
